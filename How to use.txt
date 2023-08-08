@@ -1,0 +1,13 @@
+Open terminal (best open is right click and open terminal inside the folder)
+
+Type > python.py install.py
+
+Type > python.py download.py
+
+Type > name of the file links (the one inside the folder is "links" so you can use links.txt)
+
+Type > name or path of the folder where it will be extracted (ex. babynme or path like c:\babynme)
+
+Done (:
+
+Any support > carlos.brito@br.nestle.com
