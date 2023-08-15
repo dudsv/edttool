@@ -5,8 +5,10 @@ import aiohttp
 import requests
 from bs4 import BeautifulSoup
 import re
+import helper_worksheet as helper_worksheet
+import helper_html as helper_html
+import helper_string as helper_str
 from urllib.parse import urlparse, urljoin
-import hashlib
 import string
 import openpyxl
 from tqdm import tqdm
@@ -36,8 +38,13 @@ def create_folder(title):
         title = title.replace(char, '_')
     return title
 
-file_name = input("Insert listing file:\n")
-save_folder = input("Type the destination folder:\n")
+file_name = input("Insert listing file (links.txt):\n")
+
+if file_name == "":
+    file_name = "links.txt"
+
+cod_timestamp = time.strftime("%Y%m%d%H%M%S")
+save_folder = input("Type the destination folder (tmp_" + cod_timestamp + "):\n")
 
 if not os.path.exists(save_folder):
     os.makedirs(save_folder)
