@@ -13,5 +13,11 @@ def sanitize_spaces(text):
 
 def sanitize_filename(filename):
     valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
-    sanitized_filename = "".join(c for c in filename if c in valid_chars)
+    sanitized_filename = ''.join(c for c in filename if c in valid_chars)
     return sanitized_filename
+
+def sanitize_foldername(foldername):
+    invalid_chars = '\\/:*?"<>|/'
+    for char in invalid_chars:
+        foldername = foldername.replace(char, '_')
+    return foldername

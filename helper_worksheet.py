@@ -27,13 +27,17 @@ def prepare_worksheet_pagedata(url, page_title, meta_description, meta_og_title,
     worksheet['B6'] = 'Content'
     worksheet['C6'] = 'Filename'
     worksheet['D6'] = 'Alt Text'
+    worksheet['E6'] = 'Title Text'
+    worksheet['F6'] = 'Media Text'
 
     return (workbook, worksheet)
 
-def write_worksheet_pagedata(worksheet, tag_name, content, file_name, alt_text):
+def write_worksheet_pagedata(worksheet, tag_name, content, file_name, alt_text, title_text, media_text):
     next_row = len(worksheet['A']) + 1
 
     worksheet.cell(row=next_row, column=1, value=tag_name)
     worksheet.cell(row=next_row, column=2, value=content)
     worksheet.cell(row=next_row, column=3, value=file_name)
     worksheet.cell(row=next_row, column=4, value=alt_text)
+    worksheet.cell(row=next_row, column=5, value=title_text)
+    worksheet.cell(row=next_row, column=6, value=media_text)

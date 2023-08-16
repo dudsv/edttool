@@ -45,34 +45,53 @@ def get_meta_og_description(soup):
     else:
         return ""
 
-def get_imgs(soup, url=""):
-    img_tags = soup.find_all('img')
-    img_urls = []
+def get_source_from_tags(soup, tag, url=""):
+    elements = soup.find_all(tag)
+    urls = []
 
-    for img_tag in img_tags:
-        src = img_tag.get('src', "")
+    for element in elements:
+        src = element.get('src', "")
 
         if src == "":
-            src = img_tag.get('href', "")
+            src = element.get('href', "")
+
+        if src == "":
+            src = element.get('srcset', "")
 
         if src == "":
             src = "Not found"
 
-        alt_text = img_tag.get('alt', "")
-
-        if alt_text == "":
-            alt_text = img_tag.get('title', "")
+        alt_text = element.get('alt', "")
 
         if alt_text == "":
             alt_text = "-"
+
+        title_text = element.get('title', "")
+
+        if title_text == "":
+            title_text = "-"
+
+        media_text = element.get('media', "")
+
+        if media_text == "":
+            media_text = "-"
 
         if src is not None and re.match(r'^.*\.(jpg|jpeg|png|gif|webp).*$', src):
             parsed_src = urlparse(src)
             if not parsed_src.scheme:
                 src = urljoin(url, src)
-            img_urls.append((src, alt_text))
+            urls.append((src, alt_text, title_text, media_text))
 
-    return img_urls
+    return urls
+
+def get_img_sources(soup, url=""):
+    img_urls = get_source_from_tags(soup, 'img')
+    picture_urls = get_source_from_tags(soup, 'picture')
+    source_urls = get_source_from_tags(soup, 'source')
+
+    urls = img_urls + picture_urls + source_urls
+
+    return urls
 
 def get_block_elements(soup):
     block_elements = []
@@ -105,3 +124,5 @@ async def download_image(url, session, img_local_path):
         img_data = await response.read()
         with open(img_local_path, "wb") as handler:
             handler.write(img_data)
+
+title = "10"
