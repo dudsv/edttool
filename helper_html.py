@@ -78,6 +78,7 @@ def get_source_from_tags(soup, tag, url=""):
 
         if src is not None and re.match(r'^.*\.(jpg|jpeg|png|gif|webp).*$', src):
             parsed_src = urlparse(src)
+            print(parsed_src.scheme)
             if not parsed_src.scheme:
                 src = urljoin(url, src)
             urls.append((src, alt_text, title_text, media_text))
@@ -124,5 +125,3 @@ async def download_image(url, session, img_local_path):
         img_data = await response.read()
         with open(img_local_path, "wb") as handler:
             handler.write(img_data)
-
-title = "10"
