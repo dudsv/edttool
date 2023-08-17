@@ -1,4 +1,5 @@
 import openpyxl
+from openpyxl.styles import Font
 
 def prepare_worksheet_erros():
     workbook = openpyxl.Workbook()
@@ -12,23 +13,43 @@ def prepare_worksheet_pagedata(url, page_title, meta_description, meta_og_title,
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
 
-    worksheet['A1'] = 'URL:'
-    worksheet['B1'] = url
-    worksheet['A2'] = 'Title:'
-    worksheet['B2'] = page_title
-    worksheet['A3'] = 'Meta Description:'
-    worksheet['B3'] = meta_description
-    worksheet['A4'] = 'Meta OG Title:'
-    worksheet['B4'] = meta_og_title
-    worksheet['A5'] = 'Meta OG Description:'
-    worksheet['B5'] = meta_og_description
+    worksheet.row_dimensions[6].height = 30
+    worksheet.column_dimensions["A"].width = 22
+    worksheet.column_dimensions["B"].width = 29
+    worksheet.column_dimensions["C"].width = 29
+    worksheet.column_dimensions["D"].width = 24
+    worksheet.column_dimensions["E"].width = 24
+    worksheet.column_dimensions["F"].width = 26
 
-    worksheet['A6'] = 'Tag'
-    worksheet['B6'] = 'Content'
-    worksheet['C6'] = 'Filename'
-    worksheet['D6'] = 'Alt Text'
-    worksheet['E6'] = 'Title Text'
-    worksheet['F6'] = 'Media Text'
+    worksheet.cell(row=1, column=1).value = 'URL:'
+    worksheet.cell(row=1, column=1).font = Font(bold=True)
+    worksheet.cell(row=2, column=1).value = 'Title:'
+    worksheet.cell(row=2, column=1).font = Font(bold=True)
+    worksheet.cell(row=3, column=1).value = 'Meta Description:'
+    worksheet.cell(row=3, column=1).font = Font(bold=True)
+    worksheet.cell(row=4, column=1).value = 'Meta OG Title:'
+    worksheet.cell(row=4, column=1).font = Font(bold=True)
+    worksheet.cell(row=5, column=1).value = 'Meta OG Description:'
+    worksheet.cell(row=5, column=1).font = Font(bold=True)
+
+    worksheet.cell(row=1, column=2).value = url
+    worksheet.cell(row=2, column=2).value = page_title
+    worksheet.cell(row=3, column=2).value = meta_description
+    worksheet.cell(row=4, column=2).value = meta_og_title
+    worksheet.cell(row=5, column=2).value = meta_og_description
+
+    worksheet.cell(row=6, column=1).value = 'Tag'
+    worksheet.cell(row=6, column=1).font = Font(bold=True)
+    worksheet.cell(row=6, column=2).value = 'Content'
+    worksheet.cell(row=6, column=2).font = Font(bold=True)
+    worksheet.cell(row=6, column=3).value = 'Filename'
+    worksheet.cell(row=6, column=3).font = Font(bold=True)
+    worksheet.cell(row=6, column=4).value = 'Alt Text'
+    worksheet.cell(row=6, column=4).font = Font(bold=True)
+    worksheet.cell(row=6, column=5).value = 'Title Text'
+    worksheet.cell(row=6, column=5).font = Font(bold=True)
+    worksheet.cell(row=6, column=6).value = 'Media Text'
+    worksheet.cell(row=6, column=6).font = Font(bold=True)
 
     return (workbook, worksheet)
 

@@ -44,6 +44,7 @@ async def process_url(session, url):
     sources = helper_html.get_img_sources(soup)
     num_total_images = len(sources)
     current_image = 0
+    downloaded_images = []
     if num_total_images == 1 :
         print(f"Found {num_total_images} image")
     else :
@@ -72,7 +73,18 @@ async def process_url(session, url):
         # Insert the file name and alt text in the corresponding columns
         helper_worksheet.write_worksheet_pagedata(worksheet, 'img', source, img_name, alt_text, title_text, media_text)
 
-        await helper_html.download_image(source_url, session, img_path)
+        if img_name in downloaded_images:
+            print(f"Image already downloaded. Skip download.")
+            continue
+
+        try:
+            await helper_html.download_image(source_url, session, img_path)
+            downloaded_images.append(img_name)
+        except ClientConnectorError as e:
+            print(f"Image not downloaded. Try again later.", e)
+
+    excel_file = os.path.join(page_folder, 'page_content.xlsx')
+    workbook.save(excel_file)
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -98,21 +110,13 @@ if not os.path.exists(save_folder):
 
 start_time = time.time()
 
-workbook = openpyxl.Workbook()
-error_workbook = openpyxl.Workbook()
-error_sheet = error_workbook.active
-error_sheet['A1'] = 'Page URL'
-error_sheet['B1'] = 'Error Message'
+(error_workbook, error_sheet) = helper_worksheet.prepare_worksheet_erros()
 
 with open(file_name, 'r') as file:
     lines = file.readlines()
 
 # Executa o processamento assíncrono
 asyncio.run(main())
-
-# Salva o arquivo Excel
-excel_file = os.path.join(save_folder, 'images.xlsx')
-workbook.save(excel_file)
 
 # Salva o arquivo de erros
 error_file = os.path.join(save_folder, 'errors.xlsx')
@@ -122,5 +126,3 @@ end_time = time.time()
 total_time = end_time - start_time
 
 print(f"Done. Time to process: {total_time:.2f} seconds.")
-print(f"Excel file generated: {excel_file}")
-print(f"Error file generated: {error_file}")

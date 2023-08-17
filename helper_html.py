@@ -78,7 +78,6 @@ def get_source_from_tags(soup, tag, url=""):
 
         if src is not None and re.match(r'^.*\.(jpg|jpeg|png|gif|webp).*$', src):
             parsed_src = urlparse(src)
-            print(parsed_src.scheme)
             if not parsed_src.scheme:
                 src = urljoin(url, src)
             urls.append((src, alt_text, title_text, media_text))
