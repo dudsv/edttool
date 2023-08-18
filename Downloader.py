@@ -7,12 +7,8 @@ import re
 import helper_worksheet as helper_worksheet
 import helper_html as helper_html
 import helper_string as helper_str
-from urllib.parse import urlparse, urljoin
-import string
-import openpyxl
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from tqdm import tqdm
-from aiohttp.client_exceptions import ClientConnectorError
 
 # Disable SSL verification
 requests.packages.urllib3.disable_warnings()
@@ -22,8 +18,12 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
 async def process_url(session, url):
-    async with session.get(url, headers=HEADERS) as response:
-        html_content = await response.text()
+    try:
+        async with session.get(url, headers=HEADERS) as response:
+            html_content = await response.text()
+    except Exception as e:
+        print(f"Not possible to reach the URL {url}\n", e)
+        return
 
     soup = BeautifulSoup(html_content, 'html.parser')
     url_start = helper_str.get_url_start(url)
@@ -77,22 +77,23 @@ async def process_url(session, url):
             print(f"Image already downloaded. Skip download.")
             continue
 
-        try:
-            await helper_html.download_image(source_url, session, img_path)
-            downloaded_images.append(img_name)
-        except ClientConnectorError as e:
-            print(f"Image not downloaded. Try again later.", e)
+        await helper_html.download_image(source_url, session, img_path)
+        downloaded_images.append(img_name)
+
+    # Write the block elements and their content to the worksheet
+    for idx, (tag, content) in enumerate(helper_html.get_block_elements(soup), start=1):
+        helper_worksheet.write_worksheet_pagedata(worksheet, tag, content, "", "", "", "")
 
     excel_file = os.path.join(page_folder, 'page_content.xlsx')
     workbook.save(excel_file)
+
+async def process_images():
+    return ""
 
 async def main():
     async with aiohttp.ClientSession() as session:
         tasks = [process_url(session, url.strip()) for url in lines]
         await asyncio.gather(*tasks)
-
-async def start_process():
-    return ""
 
 file_name = input("Insert listing file (links.txt):\n")
 

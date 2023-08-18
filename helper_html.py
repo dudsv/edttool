@@ -1,7 +1,6 @@
 import re
 import helper_string as helper_str
 from urllib.parse import urlparse, urljoin
-from urllib.parse import urlparse
 
 async def get_content(url, session):
     parsed_url = urlparse(url)
@@ -121,6 +120,10 @@ def is_desired_tag(tag):
 
 async def download_image(url, session, img_local_path):
     async with session.get(url) as response:
-        img_data = await response.read()
-        with open(img_local_path, "wb") as handler:
-            handler.write(img_data)
+        try:
+            img_data = await response.read()
+            with open(img_local_path, "wb") as handler:
+                handler.write(img_data)
+        except Exception as e:
+            print(f"Not possible to download the image {img_local_path}", e)
+
