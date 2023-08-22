@@ -2,17 +2,18 @@ import string
 import re
 
 def sanitize_spaces(text):
-    text = re.sub(r'[^\x00-\x7F]', '', text) # Remove non-ASCII characters
-    text = re.sub(r'\n', ' ', text) # Remove non-ASCII characters
-    text = re.sub(r'   ', ' ', text) # Remove non-ASCII characters
-    text = re.sub(r'   ', ' ', text) # Remove non-ASCII characters
-    text = re.sub(r'  ', ' ', text) # Remove non-ASCII characters
-    text = re.sub(r'  ', ' ', text) # Remove non-ASCII characters
+    text = re.sub(r'[^\x00-\x7F]', '', text)
+    text = re.sub(r'\n', ' ', text)
+    text = re.sub(r'   ', ' ', text)
+    text = re.sub(r'   ', ' ', text)
+    text = re.sub(r'  ', ' ', text)
+    text = re.sub(r'  ', ' ', text)
+    text = re.sub(r'  ', ' ', text)
 
     return text
 
 def sanitize_underscore(text):
-    text = re.sub(r'[^\x00-\x7F]', '', text) # Remove non-ASCII characters
+    text = re.sub(r'[^\x00-\x7F]', '', text)
     text = re.sub(r'___', '_', text)
     text = re.sub(r'___', '_', text)
     text = re.sub(r'__', '_', text)
