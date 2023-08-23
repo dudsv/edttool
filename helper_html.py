@@ -46,7 +46,9 @@ def get_meta_og_description(soup):
         return ""
 
 def get_source_from_tags(soup, tag, url=""):
-    elements = soup.find_all(tag)
+    article = remove_ignored_parts(soup.find("article"))
+
+    elements = article.find_all(tag)
     urls = []
 
     for element in elements:
@@ -122,6 +124,22 @@ def is_desired_tag(tag):
     You can adjust this function to include any other elements you want to collect.
     """
     return tag.name in ["p", "h1", "h2", "h3", "h4", "h5", "h6", "li"]
+
+def remove_ignored_parts(soup):
+    classes_in_divs = [
+        "component--contact-us", "component--newsletter", "component--age-calculator",
+        "component--products-list", "component--articles-list",
+        "hero--content-wrapper",
+        "article--progressbar", "article--utility-bar"
+    ]
+
+    for div in soup.find_all("div"):
+        if div.has_attr('class'):
+            for part_of_footer in classes_in_divs:
+                if part_of_footer in div["class"]:
+                    div.extract()
+
+    return soup
 
 async def download_image(url, session, img_local_path):
     async with session.get(url) as response:

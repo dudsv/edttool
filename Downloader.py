@@ -3,11 +3,9 @@ import time
 import asyncio
 import aiohttp
 import requests
-import re
 import helper_worksheet as helper_worksheet
 import helper_html as helper_html
 import helper_string as helper_str
-from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 # Disable SSL verification
@@ -43,16 +41,10 @@ async def process_url(session, url):
     current_image = 0
     downloaded_images = []
 
-    for source, alt_text, title_text, media_text in sources:
+    for source, alt_text, title_text, media_text, img_name in sources:
         current_image += 1
+
         source_url = url_start + "/" + source
-
-        img_name = os.path.basename(urlparse(source).path)
-
-        img_name = re.sub(r"\?.*$", "", img_name)
-
-        img_name = helper_str.sanitize_filename(img_name)
-
         img_path = os.path.join(page_folder, img_name)
 
         helper_worksheet.write_worksheet_pagedata(worksheet, 'img', source, img_name, alt_text, title_text, media_text)
@@ -69,7 +61,13 @@ async def process_url(session, url):
     excel_file = os.path.join(page_folder, 'page_content.xlsx')
     workbook.save(excel_file)
 
-async def process_images():
+async def download_and_process_images():
+    if img_name in downloaded_images:
+        return
+
+    await helper_html.download_image(source_url, session, img_path)
+    downloaded_images.append(img_name)
+
     return ""
 
 async def main():
