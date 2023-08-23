@@ -1,5 +1,6 @@
 import re
 import helper_string as helper_str
+import os
 from urllib.parse import urlparse, urljoin
 
 async def get_content(url, session):
@@ -75,11 +76,15 @@ def get_source_from_tags(soup, tag, url=""):
         if media_text == "":
             media_text = "-"
 
+        img_name = os.path.basename(urlparse(src).path)
+        img_name = re.sub(r"\?.*$", "", img_name)
+        img_name = helper_str.sanitize_filename(img_name)
+
         if src is not None and re.match(r'^.*\.(jpg|jpeg|png|gif|webp).*$', src):
             parsed_src = urlparse(src)
             if not parsed_src.scheme:
                 src = urljoin(url, src)
-            urls.append((src, alt_text, title_text, media_text))
+            urls.append((src, alt_text, title_text, media_text, img_name))
 
     return urls
 
