@@ -100,9 +100,10 @@ def get_img_sources(soup, url=""):
     return urls
 
 def get_block_elements(soup):
+    article = remove_ignored_parts(soup.find("article"))
     block_elements = []
 
-    for element in soup.find_all(is_desired_tag):
+    for element in article.find_all(is_desired_tag):
         for link in element.find_all('a'):
             link.replace_with(f" <a href=\"{link.get('href')}\">{link.get_text()}</a> ")
 
@@ -126,17 +127,18 @@ def is_desired_tag(tag):
     return tag.name in ["p", "h1", "h2", "h3", "h4", "h5", "h6", "li"]
 
 def remove_ignored_parts(soup):
-    classes_in_divs = [
+    classes_in_divs_to_be_ignored = [
         "component--contact-us", "component--newsletter", "component--age-calculator",
-        "component--products-list", "component--articles-list",
+        "component--products-list", "component--articles-list", "component--signposting-single",
+        "component--brand-carousel",
         "hero--content-wrapper",
         "article--progressbar", "article--utility-bar"
     ]
 
     for div in soup.find_all("div"):
         if div.has_attr('class'):
-            for part_of_footer in classes_in_divs:
-                if part_of_footer in div["class"]:
+            for class_in_div in div["class"]:
+                if class_in_div in classes_in_divs_to_be_ignored:
                     div.extract()
 
     return soup

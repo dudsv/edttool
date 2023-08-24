@@ -80,6 +80,17 @@ file_name = input("Insert listing file (links.txt):\n")
 if file_name == "":
     file_name = "links.txt"
 
+if not os.path.isfile(file_name):
+    print("This file doesn't exists.")
+    exit()
+
+with open(file_name, 'r') as file:
+    lines = file.readlines()
+
+qt_pages = len(lines)
+
+print(f"Pages found: {qt_pages}")
+
 cod_timestamp = time.strftime("%Y%m%d%H%M%S")
 save_folder = input("Type the destination folder (tmp_" + cod_timestamp + "):\n")
 
@@ -92,9 +103,6 @@ if not os.path.exists(save_folder):
 start_time = time.time()
 
 (error_workbook, error_sheet) = helper_worksheet.prepare_worksheet_erros()
-
-with open(file_name, 'r') as file:
-    lines = file.readlines()
 
 # Executa o processamento assíncrono
 asyncio.run(main())
