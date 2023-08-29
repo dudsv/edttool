@@ -46,7 +46,8 @@ def get_meta_og_description(soup):
         return ""
 
 def get_source_from_tags(soup, tag, url=""):
-    article = remove_ignored_parts(soup.find("article"))
+    # article = remove_ignored_parts(soup.find("article"))
+    article = remove_ignored_parts(soup.find(class_="layout-content"))
 
     elements = article.find_all(tag)
     urls = []
@@ -130,9 +131,10 @@ def remove_ignored_parts(soup):
     classes_in_divs_to_be_ignored = [
         "component--contact-us", "component--newsletter", "component--age-calculator",
         "component--products-list", "component--articles-list", "component--signposting-single",
+        "campaign-signpost--sponsor-logo", "content__brand",
         "component--brand-carousel",
         "hero--content-wrapper",
-        "article--progressbar", "article--utility-bar"
+        "article--progressbar", "article--utility-bar", "pre-footer", "main-footer"
     ]
 
     for div in soup.find_all("div"):
