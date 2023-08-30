@@ -1,7 +1,7 @@
 import subprocess
 
 # Lista de pacotes a serem instalados
-packages = ["aiohttp", "requests", "beautifulsoup4", "openpyxl", "tqdm"]
+packages = ["aiohttp", "requests", "beautifulsoup4", "openpyxl", "tqdm", "pil"]
 
 # Função para executar o comando de instalação
 def install_package(package):
