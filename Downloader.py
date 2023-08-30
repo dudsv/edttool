@@ -17,6 +17,8 @@ HEADERS = {
 async def process_url(session, url):
     try:
         async with session.get(url, headers=HEADERS) as response:
+            if response.status >= 400:
+                return
             html_content = await response.text()
     except Exception as e:
         print(f"Not possible to reach the URL {url}\n", e)
@@ -39,7 +41,7 @@ async def process_url(session, url):
 
     sources = helper_html.get_img_sources(soup)
     current_image = 0
-    downloaded_images = []
+    loaded_images = []
 
     for source, alt_text, title_text, media_text, img_name in sources:
         current_image += 1
@@ -49,26 +51,17 @@ async def process_url(session, url):
 
         helper_worksheet.write_worksheet_pagedata(worksheet, 'img', source, img_name, alt_text, title_text, media_text)
 
-        if img_name in downloaded_images:
+        if img_name in loaded_images:
             continue
 
-        await helper_html.download_image(source_url, session, img_path)
-        downloaded_images.append(img_name)
+        loaded_images.append(img_name)
+        await helper_html.download_image(session, source_url, img_path)
 
     for idx, (tag, content) in enumerate(helper_html.get_block_elements(soup), start=1):
         helper_worksheet.write_worksheet_pagedata(worksheet, tag, content, "", "", "", "")
 
     excel_file = os.path.join(page_folder, 'page_content.xlsx')
     workbook.save(excel_file)
-
-async def download_and_process_images():
-    if img_name in downloaded_images:
-        return
-
-    await helper_html.download_image(source_url, session, img_path)
-    downloaded_images.append(img_name)
-
-    return ""
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -89,7 +82,7 @@ with open(file_name, 'r') as file:
 
 qt_pages = len(lines)
 
-print(f"Pages found: {qt_pages}")
+print(f"Links found: {qt_pages}")
 
 cod_timestamp = time.strftime("%Y%m%d%H%M%S")
 save_folder = input("Type the destination folder (tmp_" + cod_timestamp + "):\n")
