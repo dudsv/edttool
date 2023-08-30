@@ -1,4 +1,5 @@
 import re
+import helper_processimage as helper_procimg
 import helper_string as helper_str
 import os
 from urllib.parse import urlparse, urljoin
@@ -145,12 +146,16 @@ def remove_ignored_parts(soup):
 
     return soup
 
-async def download_image(url, session, img_local_path):
-    async with session.get(url) as response:
-        try:
+async def download_image(session, url, img_local_path):
+    try:
+        async with session.get(url) as response:
             img_data = await response.read()
-            with open(img_local_path, "wb") as handler:
-                handler.write(img_data)
-        except Exception as e:
-            print(f"Not possible to download the image {img_local_path}", e)
+            handler = open(img_local_path, "wb")
+            handler.write(img_data)
+            handler.close()
+    except Exception as e:
+        print(f"Not possible to download the image {url}", e)
 
+    if len(img_data) > 307200:
+        print(img_local_path, " too big. Must be resized.")
+        helper_procimg.process_image(img_local_path)
