@@ -49,12 +49,16 @@ def get_meta_og_description(soup):
 def get_source_from_tags(soup, tag, url=""):
     # article = remove_ignored_parts(soup.find("article"))
     article = remove_ignored_parts(soup.find(class_="layout-content"))
+    # article = remove_ignored_parts(soup)
 
     elements = article.find_all(tag)
     urls = []
 
     for element in elements:
-        src = element.get('src', "")
+        src = element.get('data-src', "")
+
+        if src == "":
+            src = element.get('src', "")
 
         if src == "":
             src = element.get('href', "")
@@ -102,7 +106,7 @@ def get_img_sources(soup, url=""):
     return urls
 
 def get_block_elements(soup):
-    article = remove_ignored_parts(soup.find("article"))
+    article = remove_ignored_parts(soup.find(class_="layout-content"))
     block_elements = []
 
     for element in article.find_all(is_desired_tag):
@@ -157,5 +161,5 @@ async def download_image(session, url, img_local_path):
         print(f"Not possible to download the image {url}", e)
 
     if len(img_data) > 307200:
-        print(img_local_path, " too big. Must be resized.")
+        print(img_local_path, "too big. Must be resized.")
         helper_procimg.process_image(img_local_path)
