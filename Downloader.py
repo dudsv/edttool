@@ -68,7 +68,7 @@ async def main():
         tasks = [process_url(session, url.strip()) for url in lines]
         await asyncio.gather(*tasks)
 
-file_name = input("Insert listing file (links.txt):\n")
+file_name = input("Insert listing file: (press enter for \"links.txt\"):\n")
 
 if file_name == "":
     file_name = "links.txt"
@@ -85,7 +85,7 @@ qt_pages = len(lines)
 print(f"Links found: {qt_pages}")
 
 cod_timestamp = time.strftime("%Y%m%d%H%M%S")
-save_folder = input("Type the destination folder (tmp_" + cod_timestamp + "):\n")
+save_folder = input("Type the destination folder: (press enter for \"tmp_" + cod_timestamp + "\"):\n")
 
 if save_folder == "":
     save_folder = "tmp_" + cod_timestamp

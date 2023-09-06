@@ -68,20 +68,20 @@ def process_image(img_path: str):
     pic = pic_bg
 
   try:
-    pic.save(file_to_create, quality=reduce_quality_for)
+    # pic.save(file_to_create, quality=reduce_quality_for)
     pic.save(file_to_create_0)
-    pic.save(file_to_create_1, quality=reduce_quality_for_1)
-    pic.save(file_to_create_2, quality=reduce_quality_for_2)
-    pic.save(file_to_create_3, quality=reduce_quality_for_3)
+    # pic.save(file_to_create_1, quality=reduce_quality_for_1)
+    # pic.save(file_to_create_2, quality=reduce_quality_for_2)
+    # pic.save(file_to_create_3, quality=reduce_quality_for_3)
 
     pic_cp = pic.resize(new_size_2)
     pic_cp.save(file_to_create_4, quality=reduce_quality_for_1)
-    pic_cp = pic.resize(new_size_3)
-    pic_cp.save(file_to_create_5, quality=reduce_quality_for_1)
-    pic_cp = pic.resize(new_size_4)
-    pic_cp.save(file_to_create_6, quality=reduce_quality_for_1)
-    pic_cp = pic.resize(new_size_5)
-    pic_cp.save(file_to_create_7, quality=reduce_quality_for_1)
+    # pic_cp = pic.resize(new_size_3)
+    # pic_cp.save(file_to_create_5, quality=reduce_quality_for_1)
+    # pic_cp = pic.resize(new_size_4)
+    # pic_cp.save(file_to_create_6, quality=reduce_quality_for_1)
+    # pic_cp = pic.resize(new_size_5)
+    # pic_cp.save(file_to_create_7, quality=reduce_quality_for_1)
     pic_cp = pic.resize(new_size_6)
     pic_cp.save(file_to_create_8, quality=reduce_quality_for_1)
   except Exception as e:
