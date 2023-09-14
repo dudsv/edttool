@@ -85,7 +85,7 @@ qt_pages = len(lines)
 print(f"Links found: {qt_pages}")
 
 cod_timestamp = time.strftime("%Y%m%d%H%M%S")
-save_folder = input("Type the destination folder: (press enter for \"tmp_" + cod_timestamp + "\"):\n")
+save_folder = input("Type the destination folder (press enter for \"tmp_" + cod_timestamp + "\"):\n")
 
 if save_folder == "":
     save_folder = "tmp_" + cod_timestamp
@@ -97,10 +97,8 @@ start_time = time.time()
 
 (error_workbook, error_sheet) = helper_worksheet.prepare_worksheet_erros()
 
-# Executa o processamento assíncrono
 asyncio.run(main())
 
-# Salva o arquivo de erros
 error_file = os.path.join(save_folder, 'errors.xlsx')
 error_workbook.save(error_file)
 

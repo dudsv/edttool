@@ -47,9 +47,8 @@ def get_meta_og_description(soup):
         return ""
 
 def get_source_from_tags(soup, tag, url=""):
-    # article = remove_ignored_parts(soup.find("article"))
     article = remove_ignored_parts(soup.find(class_="layout-content"))
-    # article = remove_ignored_parts(soup)
+
 
     elements = article.find_all(tag)
     urls = []
@@ -84,8 +83,6 @@ def get_source_from_tags(soup, tag, url=""):
         if media_text == "":
             media_text = "-"
 
-        # img_name = os.path.basename(urlparse(src).path)
-        # img_name = re.sub(r"\?.*$", "", img_name)
         img_name = re.sub(r"\?.*$", "", urlparse(src).path)
         img_name = helper_str.sanitize_filename(img_name)
 
