@@ -11,10 +11,50 @@ from bs4 import BeautifulSoup
 # Disable SSL verification
 requests.packages.urllib3.disable_warnings()
 
+save_folder = ""
+lines = []
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
 
+def prepare_folder():
+    cod_timestamp = time.strftime("%Y%m%d%H%M%S")
+    save_folder = input("Type the destination folder (press enter for \"tmp_" + cod_timestamp + "\"):\n")
+
+    if save_folder == "":
+        save_folder = "tmp_" + cod_timestamp
+
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+
+    return save_folder
+
+def prepare_url_list_from_file():
+    file_name = input("Insert listing file: (press enter for \"links.txt\"):\n")
+
+    if file_name == "":
+        file_name = "links.txt"
+
+    if not os.path.isfile(file_name):
+        print("This file doesn't exists.")
+        exit()
+
+    with open(file_name, 'r') as file:
+        return file.readlines()
+
+def prepare_url_list_from_keyboard():
+    qt_continue = 'y'
+    lines = []
+    while qt_continue == 'y' or qt_continue == 'Y':
+        current_url = input(f"Enter the URL ({len(lines)} URLs): ").strip()
+        lines.append(current_url)
+        qt_continue = input("Would you like to enter one more URL? (y/n): ")
+
+    return lines
+
 async def process_url(session, url):
+    print(f"Working on URL: {url}")
+    (error_workbook, error_worksheet) = helper_worksheet.prepare_worksheet_erros()
     try:
         async with session.get(url, headers=HEADERS) as response:
             if response.status >= 400:
@@ -61,46 +101,36 @@ async def process_url(session, url):
         helper_worksheet.write_worksheet_pagedata(worksheet, tag, content, "", "", "", "")
 
     excel_file = os.path.join(page_folder, 'page_content.xlsx')
+    error_file = os.path.join(page_folder, 'errors.xlsx')
     workbook.save(excel_file)
+    error_workbook.save(error_file)
 
 async def main():
     async with aiohttp.ClientSession() as session:
         tasks = [process_url(session, url.strip()) for url in lines]
         await asyncio.gather(*tasks)
 
-file_name = input("Insert listing file: (press enter for \"links.txt\"):\n")
+give_list_infile = input("""
+Would you like to set a list of URLs in file or enter each one?
+(y = URLs file list | n = enter each URL): 
+""")
 
-if file_name == "":
-    file_name = "links.txt"
+lines = []
 
-if not os.path.isfile(file_name):
-    print("This file doesn't exists.")
-    exit()
-
-with open(file_name, 'r') as file:
-    lines = file.readlines()
+if give_list_infile == 'y' or give_list_infile == 'Y':
+    lines = prepare_url_list_from_file()
+else:
+    lines = prepare_url_list_from_keyboard()
 
 qt_pages = len(lines)
 
 print(f"Links found: {qt_pages}")
 
-cod_timestamp = time.strftime("%Y%m%d%H%M%S")
-save_folder = input("Type the destination folder (press enter for \"tmp_" + cod_timestamp + "\"):\n")
-
-if save_folder == "":
-    save_folder = "tmp_" + cod_timestamp
-
-if not os.path.exists(save_folder):
-    os.makedirs(save_folder)
+save_folder = prepare_folder()
 
 start_time = time.time()
 
-(error_workbook, error_sheet) = helper_worksheet.prepare_worksheet_erros()
-
 asyncio.run(main())
-
-error_file = os.path.join(save_folder, 'errors.xlsx')
-error_workbook.save(error_file)
 
 end_time = time.time()
 total_time = end_time - start_time
