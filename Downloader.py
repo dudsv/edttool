@@ -80,7 +80,7 @@ def prepare_url_list_from_keyboard():
 
     return lines
 
-def processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles):
+def processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles, reducequalityfor):
     curfile = mainpath + element
     if not hp.isvalidimage(curfile):
         return
@@ -112,7 +112,7 @@ def processimage(mainpath, element, newformat, endfilename, maxwidth, foldername
     finally:
         print(txt.phrases[def_language]['print_filesaved'].format(filetocreate=filetocreate))
 
-def decidewalk(mainpath, element, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory):
+def decidewalk(mainpath, element, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, reducequalityfor):
     curpath = mainpath + element
     if os.path.isdir(curpath):
         pathtocreate = mainpath + foldernamefornewfiles + element
@@ -123,11 +123,11 @@ def decidewalk(mainpath, element, newformat, maxwidth, endfilename, foldernamefo
             except:
                 print(txt.phrases[def_language]['warn_cant_create_subfolder'])
 
-        walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, element)
+        walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, reducequalityfor, element)
     elif hp.isvalidimage(curpath):
-        processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles)
+        processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles, reducequalityfor)
 
-def walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, element=""):
+def walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, reducequalityfor, element=""):
     curpath = mainpath + element
     if not os.path.isdir(curpath):
         return
@@ -136,7 +136,7 @@ def walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefo
 
     for el in elements:
         if not el in foldernamefornewfiles:
-            decidewalk(mainpath, f"{element}\\{el}", newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory)
+            decidewalk(mainpath, f"{element}\\{el}", newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, reducequalityfor)
 
 def choice_downloadimages():
     give_list_infile = str(input("Would you like to set a list of URLs in file or enter each one?\n1 = URLs file list | 2 = Enter each URL: ")).strip()
@@ -242,7 +242,7 @@ def choice_resizeimages():
 
     print(txt.phrases[def_language]['print_reducequalityforset'].format(reducequalityfor=reducequalityfor))
 
-    walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory)
+    walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, reducequalityfor)
 
 async def process_url(session, url, save_folder):
     print(f"Working on URL: {url}")
