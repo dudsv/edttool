@@ -91,7 +91,9 @@ def processimage(mainpath, element, newformat, endfilename, maxwidth, foldername
     filetocreate = f"{filetocreate}{endfilename}.{newformat}"
 
     width, height = pic.size
-    if width > maxwidth:
+    if maxwidth == 0:
+        newsize = (width, height)
+    elif width > maxwidth:
         newsize = (maxwidth, int(height / width * maxwidth))
         pic = pic.resize(newsize)
     else:
@@ -99,8 +101,11 @@ def processimage(mainpath, element, newformat, endfilename, maxwidth, foldername
 
     if newformat == 'jpg' and not pic.mode == 'RGB':
         pic_bg = img.new('RGB', newsize, (255, 255, 255))
-        pic_bg.paste(pic, pic)
-        pic = pic_bg
+        try:
+            pic_bg.paste(pic, pic)
+            pic = pic_bg
+        except Exception as e:
+            print("Could not change the background of the image", e)
 
     try:
         pic.save(filetocreate, quality=reducequalityfor)
