@@ -63,7 +63,7 @@ phrases = {
     'input_mainpath': "Path to analyse the files (empty for local path): ",
     'print_showpath': "Path set: {mainpath}",
     'print_containsfolder': "Contains folders here.",
-    'input_indsaveinotherdirectory': "Você gostaria de salvar os novos arquivos dentro de um diretório separado? [y/N]: ",
+    'input_indsaveinotherdirectory': "Would you like to save the new files in a different path? [y/N]: ",
     'input_endfilename': "Termination of file names (empty for \"_alt\" in case of saving at the same path): ",
     'input_newformat': "The new format for the images (empty jpg): ",
     'while_input_newformat': "The new format for the images (empty for jpg or i.e.: {permittedext}): ",
