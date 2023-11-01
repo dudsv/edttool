@@ -1,3 +1,4 @@
+import time
 import openpyxl
 from openpyxl.styles import Font
 
@@ -13,7 +14,7 @@ def prepare_worksheet_pagedata(url, page_title, meta_description, meta_og_title,
     workbook = openpyxl.Workbook()
     worksheet = workbook.active
 
-    worksheet.row_dimensions[6].height = 30
+    worksheet.row_dimensions[7].height = 30
     worksheet.column_dimensions["A"].width = 22
     worksheet.column_dimensions["B"].width = 29
     worksheet.column_dimensions["C"].width = 29
@@ -22,23 +23,25 @@ def prepare_worksheet_pagedata(url, page_title, meta_description, meta_og_title,
     worksheet.column_dimensions["F"].width = 26
 
     worksheet.cell(row=1, column=1).value = 'URL:'
-    worksheet.cell(row=2, column=1).value = 'Title:'
-    worksheet.cell(row=3, column=1).value = 'Meta Description:'
-    worksheet.cell(row=4, column=1).value = 'Meta OG Title:'
-    worksheet.cell(row=5, column=1).value = 'Meta OG Description:'
+    worksheet.cell(row=2, column=1).value = 'Timestamp:'
+    worksheet.cell(row=3, column=1).value = 'Title:'
+    worksheet.cell(row=4, column=1).value = 'Meta Description:'
+    worksheet.cell(row=5, column=1).value = 'Meta OG Title:'
+    worksheet.cell(row=6, column=1).value = 'Meta OG Description:'
 
     worksheet.cell(row=1, column=2).value = url
-    worksheet.cell(row=2, column=2).value = page_title
-    worksheet.cell(row=3, column=2).value = meta_description
-    worksheet.cell(row=4, column=2).value = meta_og_title
-    worksheet.cell(row=5, column=2).value = meta_og_description
+    worksheet.cell(row=2, column=2).value = time.strftime("%Y-%m-%d %H:%M:%S")
+    worksheet.cell(row=3, column=2).value = page_title
+    worksheet.cell(row=4, column=2).value = meta_description
+    worksheet.cell(row=5, column=2).value = meta_og_title
+    worksheet.cell(row=6, column=2).value = meta_og_description
 
-    worksheet.cell(row=6, column=1).value = 'Tag'
-    worksheet.cell(row=6, column=2).value = 'Content'
-    worksheet.cell(row=6, column=3).value = 'Filename'
-    worksheet.cell(row=6, column=4).value = 'Alt Text'
-    worksheet.cell(row=6, column=5).value = 'Title Text'
-    worksheet.cell(row=6, column=6).value = 'Media Text'
+    worksheet.cell(row=7, column=1).value = 'Tag'
+    worksheet.cell(row=7, column=2).value = 'Content'
+    worksheet.cell(row=7, column=3).value = 'Filename'
+    worksheet.cell(row=7, column=4).value = 'Alt Text'
+    worksheet.cell(row=7, column=5).value = 'Title Text'
+    worksheet.cell(row=7, column=6).value = 'Media Text'
 
     for cell in worksheet["A1:A5"][0] + worksheet["A6:F6"][0]:
         cell.font = Font(bold=True)
