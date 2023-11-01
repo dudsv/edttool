@@ -41,26 +41,31 @@ HEADERS = {
 }
 
 def prepare_folder():
-    cod_timestamp = time.strftime("%Y%m%d%H%M%S")
-    save_folder = input("Type the destination folder (press enter for \"tmp_" + cod_timestamp + "\"):\n")
+    save_folder = ""
 
-    if save_folder == "":
-        save_folder = "tmp_" + cod_timestamp
+    while not os.path.exists(save_folder):
+        cod_timestamp = time.strftime("%Y%m%d%H%M%S")
+        save_folder = input("Type the destination folder (press enter for \"tmp_" + cod_timestamp + "\"):\n")
 
-    if not os.path.exists(save_folder):
-        os.makedirs(save_folder)
+        if save_folder == "":
+            save_folder = "tmp_" + cod_timestamp
+
+        if not os.path.exists(save_folder):
+            os.makedirs(save_folder)
 
     return save_folder
 
 def prepare_url_list_from_file():
-    file_name = input("Insert listing file: (press enter for \"links.txt\"):\n")
+    file_name = "-"
 
-    if file_name == "":
-        file_name = "links.txt"
+    while not os.path.isfile(file_name):
+        file_name = input("Insert listing file: (press enter for \"links.txt\"):\n")
 
-    if not os.path.isfile(file_name):
-        print("This file doesn't exists.")
-        exit()
+        if file_name == "":
+            file_name = "links.txt"
+
+        if not os.path.isfile(file_name):
+            print("This file doesn't exists.")
 
     with open(file_name, 'r') as file:
         return file.readlines()
@@ -134,12 +139,9 @@ def walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefo
             decidewalk(mainpath, f"{element}\\{el}", newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory)
 
 def choice_downloadimages():
-    give_list_infile = input("""
-    Would you like to set a list of URLs in file or enter each one?
-    (y = URLs file list | n = enter each URL): 
-    """)
+    give_list_infile = str(input("Would you like to set a list of URLs in file or enter each one?\n1 = URLs file list | 2 = Enter each URL: ")).strip()
 
-    if give_list_infile == 'y' or give_list_infile == 'Y':
+    if give_list_infile == '1':
         lines = prepare_url_list_from_file()
     else:
         lines = prepare_url_list_from_keyboard()
@@ -301,10 +303,7 @@ async def main_downloader(lines, save_folder):
         await asyncio.gather(*tasks)
 
 while sair == False:
-    choice = str(input("""
-    Would you like to download images or just resize images that you have in your computer?
-    1 - Download | 2 - Resize : 
-    """)).strip()
+    choice = str(input("Would you like to download images or just resize images that you have in your computer?\n1 - Download | 2 - Resize | any other value to exit: ")).strip()
 
     if choice == "1":
         choice_downloadimages()
