@@ -26,10 +26,10 @@ requests.packages.urllib3.disable_warnings()
 if len(sys.argv) > 1:
   def_language = str(sys.argv[1]).strip()
 else:
-  def_language = "pt-br"
+  def_language = "en"
 
 if not def_language in txt.phrases:
-  def_language = "pt-br"
+  def_language = "en"
   print(txt.phrases[def_language]['input_mainpath'])
 
 reducequalityfor = 100
