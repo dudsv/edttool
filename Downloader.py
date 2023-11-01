@@ -75,7 +75,7 @@ def prepare_url_list_from_keyboard():
 
     return lines
 
-def processimage(mainpath, element, newformat):
+def processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles):
     curfile = mainpath + element
     if not hp.isvalidimage(curfile):
         return
@@ -107,7 +107,7 @@ def processimage(mainpath, element, newformat):
     finally:
         print(txt.phrases[def_language]['print_filesaved'].format(filetocreate=filetocreate))
 
-def decidewalk(mainpath, element):
+def decidewalk(mainpath, element, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory):
     curpath = mainpath + element
     if os.path.isdir(curpath):
         pathtocreate = mainpath + foldernamefornewfiles + element
@@ -118,11 +118,11 @@ def decidewalk(mainpath, element):
             except:
                 print(txt.phrases[def_language]['warn_cant_create_subfolder'])
 
-        walkthroughtthepath(mainpath, element)
+        walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, element)
     elif hp.isvalidimage(curpath):
-        processimage(mainpath, element, newformat)
+        processimage(mainpath, element, newformat, endfilename, maxwidth, foldernamefornewfiles)
 
-def walkthroughtthepath(mainpath, element=""):
+def walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory, element=""):
     curpath = mainpath + element
     if not os.path.isdir(curpath):
         return
@@ -131,7 +131,7 @@ def walkthroughtthepath(mainpath, element=""):
 
     for el in elements:
         if not el in foldernamefornewfiles:
-            decidewalk(mainpath, f"{element}\\{el}")
+            decidewalk(mainpath, f"{element}\\{el}", newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory)
 
 def choice_downloadimages():
     give_list_infile = input("""
@@ -240,7 +240,7 @@ def choice_resizeimages():
 
     print(txt.phrases[def_language]['print_reducequalityforset'].format(reducequalityfor=reducequalityfor))
 
-    walkthroughtthepath(mainpath)
+    walkthroughtthepath(mainpath, newformat, maxwidth, endfilename, foldernamefornewfiles, indsaveinotherdirectory)
 
 async def process_url(session, url, save_folder):
     print(f"Working on URL: {url}")
