@@ -221,6 +221,7 @@ def choice_resizeimages():
     else:
         print(txt.phrases[def_language]['print_advice_png_1'])
         print(txt.phrases[def_language]['print_advice_png_2'])
+        reducequalityfor = 100
 
     maxwidth = str(input(txt.phrases[def_language]['input_maxwidth']).strip())
 
